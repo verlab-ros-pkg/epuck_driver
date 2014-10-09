@@ -1,56 +1,57 @@
 #!/usr/bin/env python
 
 import rospy
-from ePuck import ePuck
-
 from geometry_msgs.msg import Twist
 
+from ePuck import ePuck
+
+
 class EPuckDriver(object):
+    def __init__(self, epuck_address):
+        self._bridge = ePuck(epuck_address, False)
 
-  def __init__(self, epuck_addr):
-    self._bridge = ePuck( epuck_addr, False )
+    def disconnect(self):
+        self._bridge.close()
 
-  def disconnect(self):
-    self._bridge.close()
+    def connect(self):
+        self._bridge.connect()
 
-  def connect(self):
-    self._bridge.connect()
+    def run(self):
+        # Connect with the ePuck
+        self.connect()
+        # Disconnect when rospy is going to down
+        rospy.on_shutdown(self.disconnect)
 
-  def run(self):
-    # Connect with the ePuck
-    self.connect()
-    # Disconnect when rospy is goind to down
-    rospy.on_shutdown(self.disconnect)
+        self._bridge.step()
 
-    self._bridge.step()
+        # Subscribe to Commando Velocity Topic
+        rospy.Subscriber("/mobile_base/cmd_vel", Twist, self.handler_velocity)
 
-    # Subscribe to Commando Velocity Topic
-    rospy.Subscriber("/mobile_base/cmd_vel", Twist, self.handler_velocity)
+        # Spin almost forever
+        rospy.spin()
 
-    # Spin almost forever
-    rospy.spin()
+    def handler_velocity(self, data):
+        linear = data.linear.x
+        angular = data.angular.z
 
-  def handler_velocity(self, data):
+        left_vel = linear * 1500 + (angular * -1 * 500)
+        right_vel = linear * 1500 + (angular * 1 * 500)
 
-    linear = data.linear.x
-    angular = data.angular.z
+        self._bridge.set_motors_speed(left_vel, right_vel)
+        self._bridge.step()
 
-    left_vel  = linear * 1500 + ( angular * -1 * 500 )
-    right_vel = linear * 1500 + ( angular *  1 * 500 )
+        print left_vel
+        print right_vel
+        print "--------------"
 
-    self._bridge.set_motors_speed(left_vel, right_vel)
-    self._bridge.step()
-
-    print left_vel
-    print right_vel
-    print "--------------"
 
 def run():
-  rospy.init_node("epuck_drive", anonymous=True)
+    rospy.init_node("epuck_drive", anonymous=True)
 
-  epuck_addr = rospy.get_param("~epuck_addr")
+    epuck_address = rospy.get_param("~epuck_address")
 
-  EPuckDriver(epuck_addr).run()
+    EPuckDriver(epuck_address).run()
+
 
 if __name__ == "__main__":
-  run()
+    run()
