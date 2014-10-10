@@ -5,6 +5,11 @@ TODO
 * Odometry
 * Camera Image
 * Yaml for parameters
-* Cinematic model for differential speed controller
+
+
+
+DONE
+-----
+* kinematic model for differential speed controller
 
 

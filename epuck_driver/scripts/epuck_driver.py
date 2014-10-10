@@ -10,9 +10,9 @@ from ePuck import ePuck
 
 CAMERA_ZOOM = 8
 # Wheel Radio (cm)
-R = 4
+WHEEL_RADIO = 4
 # Separation between wheels (cm)
-B = 5.3
+WHEEL_SEPARATION = 5.3
 
 class EPuckDriver(object):
 
@@ -65,10 +65,10 @@ class EPuckDriver(object):
         linear = data.linear.x
         angular = data.angular.z
 
-        wl = (linear - (B / 2.) * angular) / R
-        wr = (linear + (B / 2.) * angular) / R
+        wl = (linear - (WHEEL_SEPARATION / 2.) * angular) / WHEEL_RADIO
+        wr = (linear + (WHEEL_SEPARATION / 2.) * angular) / WHEEL_RADIO
 
-
+        #
         left_vel = wl * 1000.
         right_vel = wr * 1000.
 
