@@ -19,4 +19,6 @@ E-puck robots must run the  [webots](www.cyberbotics.com) firmware (resources/fi
 How to use
 -----------
 
-[TODO]
+Run the epuck_controller.launch with the e-puck's  MAC address (eg. 10:00:E8:6C:D7:E8)
+
+    $ roslaunch epuck_driver epuck_controller.launch epuck_address:='MAC'
