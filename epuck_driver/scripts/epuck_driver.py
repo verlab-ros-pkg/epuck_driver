@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import sys
-sys.path.append("../src/")
-
 import rospy
 from geometry_msgs.msg import Twist
 
@@ -30,8 +27,7 @@ class EPuckDriver(object):
         self._name = epuck_name
 
     def greeting(self):
-        self._bridge.set_front_led(1)
-        self._bridge.set_body_led(1)
+        pass
 
     def disconnect(self):
         self._bridge.close()
@@ -75,9 +71,6 @@ class EPuckDriver(object):
 
         left_vel = wl * 1000.
         right_vel = wr * 1000.
-
-        print left_vel
-        print right_vel
 
         self._bridge.set_motors_speed(left_vel, right_vel)
 
