@@ -892,13 +892,13 @@ class ePuck():
         if mode in CAM_MODE:
             self._cam_mode = CAM_MODE[mode]
         else:
-            self._debug(ERR_CAM_PARAMETERS, "Camera mode")
+            # self._debug(ERR_CAM_PARAMETERS, "Camera mode")
             return -1
 
         if int(zoom) in CAM_ZOOM:
             self._cam_zoom = zoom
         else:
-            self._debug(ERR_CAM_PARAMETERS, "Camera zoom")
+            # self._debug(ERR_CAM_PARAMETERS, "Camera zoom")
             return -1
 
         if self.conexion_status and int(width) * int(height) <= 1600:
