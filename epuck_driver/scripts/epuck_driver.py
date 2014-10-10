@@ -6,7 +6,7 @@ sys.path.append("../src")
 import rospy
 from geometry_msgs.msg import Twist
 
-from ePuck import ePuck
+from epuck.ePuck import ePuck
 
 CAMERA_ZOOM = 8
 # Wheel Radio (cm)
