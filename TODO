@@ -2,6 +2,7 @@
 TODO
 -----
 * Accelerometer
+* Odometry
 * Camera Image
 * Yaml for parameters
 * Cinematic model for differential speed controller

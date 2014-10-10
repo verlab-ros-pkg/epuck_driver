@@ -1,14 +1,26 @@
 #!/usr/bin/env python
 
+import sys
+sys.path.append("../src")
+
 import rospy
 from geometry_msgs.msg import Twist
 
 from ePuck import ePuck
 
-
 class EPuckDriver(object):
-    def __init__(self, epuck_address):
+    def __init__(self, epuck_name, epuck_address):
         self._bridge = ePuck(epuck_address, False)
+        self._bridge.enable(
+            'accelerometer'
+            'camera',
+            'motor_position',
+            'proximity',
+        )
+
+        self._bridge.set_camera_parameters('GREY_SCALE', 40, 40, 8)
+
+        self._name = epuck_name
 
     def disconnect(self):
         self._bridge.close()
@@ -25,33 +37,38 @@ class EPuckDriver(object):
         self._bridge.step()
 
         # Subscribe to Commando Velocity Topic
-        rospy.Subscriber("/mobile_base/cmd_vel", Twist, self.handler_velocity)
+        rospy.Subscriber("/%s/mobile_base/cmd_vel" % self._name, Twist, self.handler_velocity)
+
+        # Sensor Publishers
+        # rospy.Publisher("/%s/mobile_base/" % self._name, )
 
         # Spin almost forever
-        rospy.spin()
+        rate = rospy.Rate(10)
+        while not rospy.is_shutdown():
+            self._bridge.step()
+            self.update_sensors()
+
+            rate.sleep()
+
+    def update_sensors(self):
+        pass
 
     def handler_velocity(self, data):
         linear = data.linear.x
         angular = data.angular.z
 
-        left_vel = linear * 1500 + (angular * -1 * 500)
-        right_vel = linear * 1500 + (angular * 1 * 500)
+        left_vel = linear * 4000 + (angular * -1 * 800)
+        right_vel = linear * 4000 + (angular * 1 * 800)
 
         self._bridge.set_motors_speed(left_vel, right_vel)
-        self._bridge.step()
-
-        print left_vel
-        print right_vel
-        print "--------------"
-
 
 def run():
     rospy.init_node("epuck_drive", anonymous=True)
 
     epuck_address = rospy.get_param("~epuck_address")
+    epuck_name = rospy.get_param("~epuck_name", "epuck")
 
-    EPuckDriver(epuck_address).run()
-
+    EPuckDriver(epuck_name, epuck_address).run()
 
 if __name__ == "__main__":
     run()
