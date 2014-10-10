@@ -8,7 +8,10 @@ from geometry_msgs.msg import Twist
 
 from ePuck import ePuck
 
+CAMERA_ZOOM = 8
+
 class EPuckDriver(object):
+
     def __init__(self, epuck_name, epuck_address):
         self._bridge = ePuck(epuck_address, False)
         self._bridge.enable(
@@ -18,7 +21,7 @@ class EPuckDriver(object):
             'proximity',
         )
 
-        self._bridge.set_camera_parameters('GREY_SCALE', 40, 40, 8)
+        self._bridge.set_camera_parameters('RGB_365', 40, 40, CAMERA_ZOOM)
 
         self._name = epuck_name
 
@@ -27,6 +30,7 @@ class EPuckDriver(object):
 
     def connect(self):
         self._bridge.connect()
+        self._bridge.set_sound(1)
 
     def run(self):
         # Connect with the ePuck
