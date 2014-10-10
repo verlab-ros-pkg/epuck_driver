@@ -160,7 +160,7 @@ class ePuck():
         self._pil_image = None
 
         # Leds
-        self._leds_status = [False] * 8
+        self._leds_status = [False] * 10
 
     #
     # Private methods

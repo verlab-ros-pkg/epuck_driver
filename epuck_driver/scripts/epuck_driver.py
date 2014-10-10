@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-sys.path.append("../src")
+sys.path.append("../src/")
 
 import rospy
 from geometry_msgs.msg import Twist
@@ -29,12 +29,15 @@ class EPuckDriver(object):
 
         self._name = epuck_name
 
+    def greeting(self):
+        self._bridge.set_front_led(1)
+        self._bridge.set_body_led(1)
+
     def disconnect(self):
         self._bridge.close()
 
     def connect(self):
         self._bridge.connect()
-        self._bridge.set_sound(1)
 
     def run(self):
         # Connect with the ePuck
@@ -42,10 +45,12 @@ class EPuckDriver(object):
         # Disconnect when rospy is going to down
         rospy.on_shutdown(self.disconnect)
 
+        self.greeting()
+
         self._bridge.step()
 
         # Subscribe to Commando Velocity Topic
-        rospy.Subscriber("/%s/mobile_base/cmd_vel" % self._name, Twist, self.handler_velocity)
+        rospy.Subscriber("mobile_base/cmd_vel", Twist, self.handler_velocity)
 
         # Sensor Publishers
         # rospy.Publisher("/%s/mobile_base/" % self._name, )
@@ -68,9 +73,11 @@ class EPuckDriver(object):
         wl = (linear - (B / 2.) * angular) / R
         wr = (linear + (B / 2.) * angular) / R
 
-
         left_vel = wl * 1000.
         right_vel = wr * 1000.
+
+        print left_vel
+        print right_vel
 
         self._bridge.set_motors_speed(left_vel, right_vel)
 
