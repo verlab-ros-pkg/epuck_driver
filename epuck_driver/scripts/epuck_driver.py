@@ -8,6 +8,12 @@ from geometry_msgs.msg import Twist
 
 from ePuck import ePuck
 
+# Wheel Radio (cm)
+R = 4
+# Separation between wheels (cm)
+B = 5.3
+
+
 class EPuckDriver(object):
     def __init__(self, epuck_name, epuck_address):
         self._bridge = ePuck(epuck_address, False)
@@ -57,8 +63,12 @@ class EPuckDriver(object):
         linear = data.linear.x
         angular = data.angular.z
 
-        left_vel = linear * 4000 + (angular * -1 * 800)
-        right_vel = linear * 4000 + (angular * 1 * 800)
+        wl = (linear - (B / 2.) * angular) / R
+        wr = (linear + (B / 2.) * angular) / R
+
+
+        left_vel = wl * 1000.
+        right_vel = wr * 1000.
 
         self._bridge.set_motors_speed(left_vel, right_vel)
 
