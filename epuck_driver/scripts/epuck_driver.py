@@ -15,15 +15,6 @@ class EPuckDriver(object):
 
     def __init__(self, epuck_name, epuck_address):
         self._bridge = ePuck(epuck_address, False)
-        self._bridge.enable(
-            'accelerometer'
-            'camera',
-            'motor_position',
-            'proximity',
-        )
-
-        self._bridge.set_camera_parameters('RGB_365', 40, 40, CAMERA_ZOOM)
-
         self._name = epuck_name
 
     def greeting(self):
@@ -34,6 +25,15 @@ class EPuckDriver(object):
 
     def connect(self):
         self._bridge.connect()
+
+        self._bridge.enable(
+            'accelerometer'
+            # 'camera',
+            # 'motor_position',
+            # 'proximity'
+        )
+
+        self._bridge.set_camera_parameters('RGB_365', 40, 40, CAMERA_ZOOM)
 
     def run(self):
         # Connect with the ePuck
@@ -52,7 +52,7 @@ class EPuckDriver(object):
         # rospy.Publisher("/%s/mobile_base/" % self._name, )
 
         # Spin almost forever
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(1)
         while not rospy.is_shutdown():
             self._bridge.step()
             self.update_sensors()
@@ -60,7 +60,8 @@ class EPuckDriver(object):
             rate.sleep()
 
     def update_sensors(self):
-        pass
+        print "accelerometer:", self._bridge.get_accelerometer()
+        # print "proximity:", self._bridge.get_proximity()
 
     def handler_velocity(self, data):
         linear = data.linear.x
