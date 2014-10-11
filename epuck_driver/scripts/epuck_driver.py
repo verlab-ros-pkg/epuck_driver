@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-from cv_bridge.core import CvBridge
+
 
 import rospy
 import numpy as np
+from cv_bridge.core import CvBridge
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
 from epuck.ePuck import ePuck
@@ -15,12 +16,15 @@ WHEEL_SEPARATION = 5.3
 
 
 class EPuckDriver(object):
+
     def __init__(self, epuck_name, epuck_address):
         self._bridge = ePuck(epuck_address, False)
         self._name = epuck_name
 
     def greeting(self):
         pass
+        # self._bridge.set_body_led(1)
+        # self._bridge.set_front_led(1)
 
     def disconnect(self):
         self._bridge.close()
@@ -30,9 +34,11 @@ class EPuckDriver(object):
 
         self._bridge.enable(
             'accelerometer',
-            'camera',
-            # 'motor_position',
-            # 'proximity'
+            'proximity',
+            'motor_position',
+            'light',
+            'floor',
+            'camera'
         )
 
         self._bridge.set_camera_parameters('RGB_365', 40, 40, CAMERA_ZOOM)
@@ -55,7 +61,7 @@ class EPuckDriver(object):
         self.image_publisher = rospy.Publisher("camera", Image)
 
         # Spin almost forever
-        rate = rospy.Rate(4)
+        rate = rospy.Rate(10)
         while not rospy.is_shutdown():
             self._bridge.step()
             self.update_sensors()
@@ -63,8 +69,12 @@ class EPuckDriver(object):
             rate.sleep()
 
     def update_sensors(self):
-        print "accelerometer:", self._bridge.get_accelerometer()
+        # print "accelerometer:", self._bridge.get_accelerometer()
         # print "proximity:", self._bridge.get_proximity()
+        # print "light:", self._bridge.get_light_sensor()
+        # print "motor_position:", self._bridge.get_motor_position()
+        # print "floor:", self._bridge.get_floor_sensors()
+        # print "image:", self._bridge.get_image()
 
 
 
@@ -98,7 +108,6 @@ def run():
     epuck_name = rospy.get_param("~epuck_name", "epuck")
 
     EPuckDriver(epuck_name, epuck_address).run()
-
 
 if __name__ == "__main__":
     run()
