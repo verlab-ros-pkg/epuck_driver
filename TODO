@@ -1,10 +1,18 @@
 
 TODO
------
-* Accelerometer
-* Odometry
-* Camera Image
-* Yaml for parameters
+======
+Priority:
+--------
+* Sensor: Accelerometer
+* Sensor: Odometry
+* Sensor: Camera Image
+* Sensor: Proximity (array IR)
+
+next release
+* Sensor: Selector
+* Sensor: Floor
+* Sensor: microfone
+* set sound
 
 
 
