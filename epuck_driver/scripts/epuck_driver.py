@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import numpy as np
 from geometry_msgs.msg import Twist
 
 from epuck.ePuck import ePuck
@@ -19,6 +20,8 @@ class EPuckDriver(object):
 
     def greeting(self):
         pass
+        # self._bridge.set_body_led(1)
+        # self._bridge.set_front_led(1)
 
     def disconnect(self):
         self._bridge.close()
@@ -27,13 +30,15 @@ class EPuckDriver(object):
         self._bridge.connect()
 
         self._bridge.enable(
-            'accelerometer'
-            # 'camera',
-            # 'motor_position',
-            # 'proximity'
+            'accelerometer',
+            'proximity',
+            'motor_position',
+            'light',
+            'floor',
+            'camera'
         )
 
-        self._bridge.set_camera_parameters('RGB_365', 40, 40, CAMERA_ZOOM)
+        # self._bridge.set_camera_parameters('RGB_365', 40, 40, CAMERA_ZOOM)
 
     def run(self):
         # Connect with the ePuck
@@ -52,7 +57,7 @@ class EPuckDriver(object):
         # rospy.Publisher("/%s/mobile_base/" % self._name, )
 
         # Spin almost forever
-        rate = rospy.Rate(1)
+        rate = rospy.Rate(10)
         while not rospy.is_shutdown():
             self._bridge.step()
             self.update_sensors()
@@ -60,8 +65,12 @@ class EPuckDriver(object):
             rate.sleep()
 
     def update_sensors(self):
-        print "accelerometer:", self._bridge.get_accelerometer()
+        # print "accelerometer:", self._bridge.get_accelerometer()
         # print "proximity:", self._bridge.get_proximity()
+        # print "light:", self._bridge.get_light_sensor()
+        # print "motor_position:", self._bridge.get_motor_position()
+        # print "floor:", self._bridge.get_floor_sensors()
+        # print "image:", self._bridge.get_image()
 
     def handler_velocity(self, data):
         linear = data.linear.x
