@@ -67,7 +67,7 @@ class EPuckDriver(object):
         enable = [s for s, en in self.enabled_sensors.items() if en]
 
         # Enable the right sensors
-        self._bridge.enable(**enable)
+        self._bridge.enable(*enable)
 
         if self.enabled_sensors['camera']:
             self._bridge.set_camera_parameters(IMAGE_FORMAT, 40, 40, CAMERA_ZOOM)
