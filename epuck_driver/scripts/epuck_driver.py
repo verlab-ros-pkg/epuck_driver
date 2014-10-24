@@ -8,44 +8,77 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
 from epuck.ePuck import ePuck
 
+## Camera parameters
+IMAGE_FORMAT = 'RGB_365'
 CAMERA_ZOOM = 8
+
+## Epuck dimensions
 # Wheel Radio (cm)
 WHEEL_RADIO = 4
 # Separation between wheels (cm)
 WHEEL_SEPARATION = 5.3
 
 
+# available sensors
+sensors = ['accelerometer', 'proximity', 'motor_position', 'light',
+           'floor', 'camera']
+
+
 class EPuckDriver(object):
+    """
+
+    :param epuck_name:
+    :param epuck_address:
+    """
 
     def __init__(self, epuck_name, epuck_address):
         self._bridge = ePuck(epuck_address, False)
         self._name = epuck_name
 
+        self.enabled_sensors = {s: None for s in sensors}
+
     def greeting(self):
-        pass
-        # self._bridge.set_body_led(1)
-        # self._bridge.set_front_led(1)
+        """
+        Hello by robot.
+        """
+        self._bridge.set_body_led(1)
+        self._bridge.set_front_led(1)
+        rospy.sleep(0.5)
+        self._bridge.set_body_led(0)
+        self._bridge.set_front_led(0)
 
     def disconnect(self):
+        """
+        Close bluetooth connection
+        """
         self._bridge.close()
 
-    def connect(self):
-        self._bridge.connect()
+    def setup_sensors(self):
+        """
+        Enable epuck sensors based on the parameters.
+        By default, all sensors are false.
 
-        self._bridge.enable(
-            'accelerometer',
-            'proximity',
-            'motor_position',
-            'light',
-            'floor',
-            'camera'
-        )
+        """
+        # get parameters to enable sensors
+        for sensor in sensors:
+            self.enabled_sensors[sensor] = rospy.get_param('~' + sensor, False)
 
-        self._bridge.set_camera_parameters('RGB_365', 40, 40, CAMERA_ZOOM)
+        # Only enabled sensors
+        enable = [s for s, en in self.enabled_sensors.items() if en]
+
+        # Enable the right sensors
+        self._bridge.enable(**enable)
+
+        if self.enabled_sensors['camera']:
+            self._bridge.set_camera_parameters(IMAGE_FORMAT, 40, 40, CAMERA_ZOOM)
 
     def run(self):
-        # Connect with the ePuck
-        self.connect()
+        # Connect to the ePuck
+        self._bridge.connect()
+
+        # Setup the necessary sensors.
+        self.setup_sensors()
+
         # Disconnect when rospy is going to down
         rospy.on_shutdown(self.disconnect)
 
@@ -58,7 +91,9 @@ class EPuckDriver(object):
 
         # Sensor Publishers
         # rospy.Publisher("/%s/mobile_base/" % self._name, )
-        self.image_publisher = rospy.Publisher("camera", Image)
+
+        if self.enabled_sensors['camera']:
+            self.image_publisher = rospy.Publisher("camera", Image)
 
         # Spin almost forever
         rate = rospy.Rate(10)
@@ -78,16 +113,22 @@ class EPuckDriver(object):
 
 
 
-        # Get Image
-        image = self._bridge.get_image()
-        print image
-        if image is not None:
-            nimage = np.asarray(image)
-            image_msg = CvBridge().cv2_to_imgmsg(nimage, "rgb8")
-            self.image_publisher.publish(image_msg)
+        ## If image from camera
+        if self.enabled_sensors['camera']:
+            # Get Image
+            image = self._bridge.get_image()
+            print image
+            if image is not None:
+                nimage = np.asarray(image)
+                image_msg = CvBridge().cv2_to_imgmsg(nimage, "rgb8")
+                self.image_publisher.publish(image_msg)
 
 
     def handler_velocity(self, data):
+        """
+        Controls the velocity of each wheel based on linear and angular velocities.
+        :param data:
+        """
         linear = data.linear.x
         angular = data.angular.z
 
@@ -108,6 +149,7 @@ def run():
     epuck_name = rospy.get_param("~epuck_name", "epuck")
 
     EPuckDriver(epuck_name, epuck_address).run()
+
 
 if __name__ == "__main__":
     run()

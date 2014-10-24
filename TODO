@@ -3,9 +3,9 @@ TODO
 ======
 Priority:
 --------
+* Parameters to enable sensors.
 * Sensor: Accelerometer
 * Sensor: Odometry
-* Sensor: Camera Image
 * Sensor: Proximity (array IR)
 
 next release
@@ -19,5 +19,5 @@ next release
 DONE
 -----
 * kinematic model for differential speed controller
-
+* Sensor: Camera Image
 
