@@ -1,0 +1,13 @@
+<stack>
+  <description brief="E-Puck Driver">Driver stack for E-Puck Mobile Robot</description>
+  <author>Maintained by Verlab Laboratory.</author>
+  <license>GPL</license>  
+  <review status="experimental" notes="Under active development"/>
+  <url>http://wiki.ros.org/epuck_driver</url>
+  <version>0.1.0</version>
+  <depend stack="common_msgs" /> <!-- nav_msgs, geometry_msgs, sensor_msgs -->
+  <depend stack="geometry" /> <!-- tf -->
+  <depend stack="common" /> <!-- nodelet -->
+  <depend stack="ros" />
+  <depend stack="ros_comm" /> <!-- rospy, std_msgs, roscpp -->
+</stack>
