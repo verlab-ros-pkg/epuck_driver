@@ -6,8 +6,6 @@
     <maintainer email="dajulian@gmail.com">David Saldana</maintainer>
     <license>GPL</license>
     <url type="website">http://wiki.ros.org/epuck_driver</url>
-    
-
     <buildtool_depend>catkin</buildtool_depend>
     <build_depend>cv_bridge</build_depend>
     <build_depend>geometry_msgs</build_depend>
