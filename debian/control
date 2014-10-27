@@ -1,0 +1,12 @@
+Source: ros-indigo-epuck-driver
+Section: misc
+Priority: extra
+Maintainer: David Saldana <dajulian@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin, ros-indigo-cv-bridge, ros-indigo-geometry-msgs, ros-indigo-roscpp, ros-indigo-rospy, ros-indigo-sensor-msgs, ros-indigo-std-msgs, ros-indigo-tf
+Homepage: http://wiki.ros.org/epuck_driver
+Standards-Version: 3.9.2
+
+Package: ros-indigo-epuck-driver
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-cv-bridge, ros-indigo-geometry-msgs, ros-indigo-image-transport, ros-indigo-roscpp, ros-indigo-rospy, ros-indigo-sensor-msgs, ros-indigo-std-msgs, ros-indigo-tf
+Description: Driver stack for E-Puck Mobile Robot
