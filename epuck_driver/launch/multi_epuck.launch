@@ -1,0 +1,16 @@
+<launch>
+
+	<arg name="robot_name" default="robot"/>
+	<arg name="robot_address"/>
+	
+	<group ns="$(arg robot_name)">
+
+		<include file="$(find epuck_driver)/launch/epuck_controller.launch">
+			<arg name="epuck_address" value="$(arg robot_address)"/>
+		</include>
+		
+		 <node pkg="interface_epuck" type="interface_epuck_node" name="$(anon interface_epuck)" args="$(arg robot_name)" output="screen">
+		</node> 
+	</group>
+
+</launch>

@@ -1,0 +1,23 @@
+
+TODO
+======
+Priority:
+--------
+* Parameters to enable sensors.
+* Sensor: Accelerometer
+* Sensor: Odometry
+* Sensor: Proximity (array IR)
+
+next release
+* Sensor: Selector
+* Sensor: Floor
+* Sensor: microfone
+* set sound
+
+
+
+DONE
+-----
+* kinematic model for differential speed controller
+* Sensor: Camera Image
+

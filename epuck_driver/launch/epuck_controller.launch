@@ -1,0 +1,9 @@
+<launch>
+
+    <arg name="epuck_address"/>
+
+    <node pkg="epuck_driver" type="epuck_driver.py" name="$(anon epuck_driver)" output="screen">
+        <param name="epuck_address" value="$(arg epuck_address)"/>
+    </node>
+
+</launch>
