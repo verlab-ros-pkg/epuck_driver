@@ -2,11 +2,17 @@
     <name>epuck_driver</name>
     <version>0.1.0</version>
     <description>Driver stack for E-Puck Mobile Robot</description>
+
     <author>Verlab Laboratory</author>
+
     <maintainer email="dajulian@gmail.com">David Saldana</maintainer>
+    <maintainer email="workmelo@gmail.com">Ramon Melo</maintainer>
+
     <license>GPL</license>
     <url type="website">http://wiki.ros.org/epuck_driver</url>
+
     <buildtool_depend>catkin</buildtool_depend>
+
     <build_depend>cv_bridge</build_depend>
     <build_depend>geometry_msgs</build_depend>
     <build_depend>rospy</build_depend>
@@ -14,6 +20,7 @@
     <build_depend>sensor_msgs</build_depend>
     <build_depend>std_msgs</build_depend>
     <build_depend>tf</build_depend>
+
     <run_depend>cv_bridge</run_depend>
     <run_depend>geometry_msgs</run_depend>
     <run_depend>image_transport</run_depend>
@@ -22,6 +29,7 @@
     <run_depend>sensor_msgs</run_depend>
     <run_depend>std_msgs</run_depend>
     <run_depend>tf</run_depend>
+
 </package>
 
 
