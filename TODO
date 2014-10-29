@@ -3,21 +3,18 @@ TODO
 ======
 Priority:
 --------
-* Parameters to enable sensors.
-* Sensor: Accelerometer
-* Sensor: Odometry
-* Sensor: Proximity (array IR)
+ ☐ Parameters to enable sensors.
+ ☐ Sensor: Accelerometer
+ ☐ Sensor: Odometry
+ ☐ Sensor: Proximity (array IR)
+ ☐ Add reference to e-puck firmware uploader on README
 
 next release
-* Sensor: Selector
-* Sensor: Floor
-* Sensor: microfone
-* set sound
+ ☐ Sensor: Selector
+ ☐ Sensor: Floor
+ ☐ Sensor: microfone
+ ☐ Set sound
 
-
-
-DONE
------
-* kinematic model for differential speed controller
-* Sensor: Camera Image
-
+Archive:
+ ✔ kinematic model for differential speed controller @done @project(Priority)
+ ✔ Sensor: Camera Image @done @project(Priority)
