@@ -5,9 +5,8 @@ import numpy as np
 from cv_bridge.core import CvBridge
 from geometry_msgs.msg import Twist, Vector3
 from sensor_msgs.msg import Image
+from std_msgs.msg import UInt32MultiArray
 from epuck.ePuck import ePuck
-
-from epuck_driver.msg import MotorPosition
 
 ## Camera parameters
 IMAGE_FORMAT = 'RGB_365'
@@ -103,7 +102,10 @@ class EPuckDriver(object):
             self.accelerometer_publisher = rospy.Publisher("accelerometer", Vector3)
 
         if self.enabled_sensors['motor_position']:
-            self.motor_position_publisher = rospy.Publisher("motor_position", MotorPosition)
+            self.motor_position_publisher = rospy.Publisher("motor_position", UInt32MultiArray)
+
+        if self.enabled_sensors["proximity"]:
+            self.proximity_publisher = rospy.Publisher("proximity", UInt32MultiArray)
 
         # Spin almost forever
         rate = rospy.Rate(10)
@@ -114,12 +116,8 @@ class EPuckDriver(object):
             rate.sleep()
 
     def update_sensors(self):
-        # print "accelerometer:", self._bridge.get_accelerometer()
-        # print "proximity:", self._bridge.get_proximity()
         # print "light:", self._bridge.get_light_sensor()
-        # print "motor_position:", self._bridge.get_motor_position()
         # print "floor:", self._bridge.get_floor_sensors()
-        # print "image:", self._bridge.get_image()
 
         ## Send image
         if self.enabled_sensors['camera']:
@@ -140,7 +138,12 @@ class EPuckDriver(object):
         if self.enabled_sensors["motor_position"]:
             motor_position = self._bridge.get_motor_position()
 
-            self.motor_position_publisher.publish( MotorPosition( *motor_position ) )
+            self.motor_position_publisher.publish( UInt32MultiArray( data = list(motor_position) ) )
+
+        if self.enabled_sensors["proximity"]:
+            proximity = self._bridge.get_proximity()
+
+            self.proximity_publisher.publish( UInt32MultiArray( data = list(proximity) ) )
 
     def handler_velocity(self, data):
         """

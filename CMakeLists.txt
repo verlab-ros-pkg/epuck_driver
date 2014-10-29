@@ -5,7 +5,7 @@ project(epuck_driver)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  message_generation
+  # message_generation
   cv_bridge
   geometry_msgs
   rospy
@@ -49,10 +49,9 @@ catkin_python_setup()
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  MotorPosition.msg
-)
+# add_message_files(
+  # FILES
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -69,12 +68,12 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs
-  sensor_msgs
-)
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+#   geometry_msgs
+#   sensor_msgs
+# )
 
 ###################################
 ## catkin specific configuration ##
@@ -92,7 +91,7 @@ catkin_package(
   geometry_msgs
   rospy
   std_msgs
-  message_runtime
+  # message_runtime
   cv_bridge
   roscpp
   sensor_msgs
