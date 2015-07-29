@@ -1,0 +1,24 @@
+<launch>
+
+    <arg name="epuck_address"/>
+
+    <arg name="accelerometer" default="false"/>
+    <arg name="proximity" default="false"/>
+    <arg name="motor_position" default="false"/>
+    <arg name="light" default="false"/>
+    <arg name="floor" default="false"/>
+    <arg name="camera" default="false"/>
+
+    <node pkg="epuck_driver" type="epuck_driver.py" name="$(anon epuck_driver)" output="screen">
+        <param name="epuck_address"  value="$(arg epuck_address)"/>
+
+        <!-- Enable sensors -->
+        <param name="accelerometer"  value="$(arg accelerometer)"/>
+        <param name="proximity"      value="$(arg proximity)"/>
+        <param name="motor_position" value="$(arg motor_position)"/>
+        <param name="light"          value="$(arg light)"/>
+        <param name="floor"          value="$(arg floor)"/>
+        <param name="camera"         value="$(arg camera)"/>
+    </node>
+
+</launch>
