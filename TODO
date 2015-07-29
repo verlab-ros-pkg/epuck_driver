@@ -3,13 +3,19 @@ TODO
 ======
 Priority:
 --------
- ☐ Parameters to enable sensors.
- ☐ Sensor: Accelerometer
- ☐ Sensor: Odometry
- ☐ Sensor: Proximity (array IR)
+ ✔ Parameters to enable sensors. @done (14-10-29 18:27)
+ ✔ Sensor: Accelerometer @done (14-10-29 18:27)
+ ✔ Sensor: Odometry @done (14-10-29 18:27)
+ ✔ Sensor: Proximity (array IR) @done (14-10-29 18:27)
  ☐ Add reference to e-puck firmware uploader on README
 
-next release
+Services:
+ ☐ Led Service
+ ☐ Sound Service
+ ☐ Body Light Service
+ ☐ Front Light Service
+
+next release:
  ☐ Sensor: Selector
  ☐ Sensor: Floor
  ☐ Sensor: microfone

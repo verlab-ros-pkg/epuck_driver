@@ -129,17 +129,19 @@ class EPuckDriver(object):
                 image_msg = CvBridge().cv2_to_imgmsg(nimage, "rgb8")
                 self.image_publisher.publish(image_msg)
 
-        # Send accelerometer values
+        # Send accelerometer sensor values
         if self.enabled_sensors['accelerometer']:
             accel = self._bridge.get_accelerometer()
 
             self.accelerometer_publisher.publish( Vector3( *accel ) )
 
+        # Send the motor positions
         if self.enabled_sensors["motor_position"]:
             motor_position = self._bridge.get_motor_position()
 
             self.motor_position_publisher.publish( UInt32MultiArray( data = list(motor_position) ) )
 
+        # Send the proximity sensor values
         if self.enabled_sensors["proximity"]:
             proximity = self._bridge.get_proximity()
 
