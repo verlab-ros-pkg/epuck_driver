@@ -5,9 +5,14 @@ project(epuck_driver)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  # message_generation
+  cv_bridge
   geometry_msgs
   rospy
+  roscpp
+  sensor_msgs
   std_msgs
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -45,9 +50,7 @@ catkin_python_setup()
 
 ## Generate messages in the 'msg' folder
 # add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
+  # FILES
 # )
 
 ## Generate services in the 'srv' folder
@@ -67,7 +70,9 @@ catkin_python_setup()
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   geometry_msgs#   std_msgs
+#   std_msgs
+#   geometry_msgs
+#   sensor_msgs
 # )
 
 ###################################
@@ -81,8 +86,17 @@ catkin_python_setup()
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES epuck_driver
-#  CATKIN_DEPENDS geometry_msgs rospy std_msgs
+  LIBRARIES epuck_driver
+  CATKIN_DEPENDS
+  geometry_msgs
+  rospy
+  std_msgs
+  # message_runtime
+  cv_bridge
+  roscpp
+  sensor_msgs
+  tf
+
 #  DEPENDS system_lib
 )
 

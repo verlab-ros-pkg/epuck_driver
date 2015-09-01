@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-
 import rospy
 import numpy as np
 from cv_bridge.core import CvBridge
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, Vector3
 from sensor_msgs.msg import Image
+from std_msgs.msg import UInt32MultiArray
 from epuck.ePuck import ePuck
 
 ## Camera parameters
@@ -20,51 +20,55 @@ WHEEL_SEPARATION = 5.3
 
 
 # available sensors
-sensors = ['accelerometer', 'proximity', 'motor_position', 'light',
+SENSORS = ['accelerometer', 'proximity', 'motor_position', 'light',
            'floor', 'camera']
 
 
 class EPuckDriver(object):
     """
-
-    :param epuck_name:
-    :param epuck_address:
+    :param epuck_name:    e-puck name
+    :param epuck_address: e-puck bluetooth MAC address
     """
-
     def __init__(self, epuck_name, epuck_address):
         self._bridge = ePuck(epuck_address, False)
         self._name = epuck_name
 
-        self.enabled_sensors = {s: None for s in sensors}
+        self.enabled_sensors = {sensor_name: None for sensor_name in SENSORS}
 
     def greeting(self):
         """
         Hello by robot.
         """
+
         self._bridge.set_body_led(1)
         self._bridge.set_front_led(1)
+        self._bridge.step()
+
         rospy.sleep(0.5)
+
         self._bridge.set_body_led(0)
         self._bridge.set_front_led(0)
+        self._bridge.step()
 
     def disconnect(self):
         """
         Close bluetooth connection
         """
+
         self._bridge.close()
 
     def setup_sensors(self):
         """
         Enable epuck sensors based on the parameters.
         By default, all sensors are false.
-
         """
+
         # get parameters to enable sensors
-        for sensor in sensors:
-            self.enabled_sensors[sensor] = rospy.get_param('~' + sensor, False)
+        for sensor in SENSORS:
+            self.enabled_sensors[sensor] = rospy.get_param('~%s' % sensor, False)
 
         # Only enabled sensors
-        enable = [s for s, en in self.enabled_sensors.items() if en]
+        enable = [sensor for sensor, enabled in self.enabled_sensors.items() if enabled]
 
         # Enable the right sensors
         self._bridge.enable(*enable)
@@ -90,10 +94,18 @@ class EPuckDriver(object):
         rospy.Subscriber("mobile_base/cmd_vel", Twist, self.handler_velocity)
 
         # Sensor Publishers
-        # rospy.Publisher("/%s/mobile_base/" % self._name, )
 
         if self.enabled_sensors['camera']:
             self.image_publisher = rospy.Publisher("camera", Image)
+
+        if self.enabled_sensors['accelerometer']:
+            self.accelerometer_publisher = rospy.Publisher("accelerometer", Vector3)
+
+        if self.enabled_sensors['motor_position']:
+            self.motor_position_publisher = rospy.Publisher("motor_position", UInt32MultiArray)
+
+        if self.enabled_sensors["proximity"]:
+            self.proximity_publisher = rospy.Publisher("proximity", UInt32MultiArray)
 
         # Spin almost forever
         rate = rospy.Rate(10)
@@ -104,25 +116,36 @@ class EPuckDriver(object):
             rate.sleep()
 
     def update_sensors(self):
-        # print "accelerometer:", self._bridge.get_accelerometer()
-        # print "proximity:", self._bridge.get_proximity()
         # print "light:", self._bridge.get_light_sensor()
-        # print "motor_position:", self._bridge.get_motor_position()
         # print "floor:", self._bridge.get_floor_sensors()
-        # print "image:", self._bridge.get_image()
 
-
-
-        ## If image from camera
+        ## Send image
         if self.enabled_sensors['camera']:
             # Get Image
             image = self._bridge.get_image()
-            print image
+
             if image is not None:
                 nimage = np.asarray(image)
                 image_msg = CvBridge().cv2_to_imgmsg(nimage, "rgb8")
                 self.image_publisher.publish(image_msg)
 
+        # Send accelerometer sensor values
+        if self.enabled_sensors['accelerometer']:
+            accel = self._bridge.get_accelerometer()
+
+            self.accelerometer_publisher.publish( Vector3( *accel ) )
+
+        # Send the motor positions
+        if self.enabled_sensors["motor_position"]:
+            motor_position = self._bridge.get_motor_position()
+
+            self.motor_position_publisher.publish( UInt32MultiArray( data = list(motor_position) ) )
+
+        # Send the proximity sensor values
+        if self.enabled_sensors["proximity"]:
+            proximity = self._bridge.get_proximity()
+
+            self.proximity_publisher.publish( UInt32MultiArray( data = list(proximity) ) )
 
     def handler_velocity(self, data):
         """
@@ -143,7 +166,7 @@ class EPuckDriver(object):
 
 
 def run():
-    rospy.init_node("epuck_drive", anonymous=True)
+    rospy.init_node("epuck_driver", anonymous=True)
 
     epuck_address = rospy.get_param("~epuck_address")
     epuck_name = rospy.get_param("~epuck_name", "epuck")
