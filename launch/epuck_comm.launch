@@ -1,0 +1,9 @@
+<launch>
+
+  <arg name="robot_id"/>
+
+  <node pkg="epuck_driver" type="epuck_comm.py" name="$(anon epuck_comm)" output="screen">
+    <param name="robot_id" value="$(arg robot_id)"/>
+  </node>
+
+</launch>
